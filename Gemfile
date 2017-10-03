@@ -1,13 +1,13 @@
-source :rubygems
+source 'https://rubygems.org'
 
 platform :jruby do
   gem 'redstorm', '~> 0.6.4'
 end
 
-platform :mri  do
-  gem 'twitter-stream', '~> 0.1.16'
-  gem 'redis', '~> 3.0.2'
+platform :mri do
   gem 'hiredis', '~> 0.4.5'
+  gem 'redis', '~> 3.0.2'
+  gem 'twitter-stream', '~> 0.1.16'
 end
 
 group :test do
@@ -16,7 +16,7 @@ group :test do
 end
 
 group :topology do
-  gem 'redis', '~> 3.0.2', :platforms => :jruby
-  gem 'json', :platforms => :jruby
-  gem 'twitter-text', '~> 1.5.0', :platform => :jruby
+  gem 'json', platforms: :jruby
+  gem 'redis', '~> 3.0.2', platforms: :jruby
+  gem 'twitter-text', '~> 1.5.0', platform: :jruby
 end

@@ -8,33 +8,32 @@ require 'lib/tweitgeist/storm/rank_bolt'
 require 'lib/tweitgeist/storm/merge_bolt'
 
 module Tweitgeist
- 
   class TweitgeistTopology < RedStorm::SimpleTopology
     spout TwitterStreamSpout do
       output_fields :tweet
     end
-        
-    bolt ExtractMessageBolt, :parallelism => 3 do
+
+    bolt ExtractMessageBolt, parallelism: 3 do
       source TwitterStreamSpout, :shuffle
       output_fields :message
     end
 
-    bolt ExtractHashtagsBolt, :parallelism => 3 do
+    bolt ExtractHashtagsBolt, parallelism: 3 do
       source ExtractMessageBolt, :shuffle
       output_fields :hashtag
     end
 
-    bolt RollingCountBolt, :parallelism => 3 do
-      source ExtractHashtagsBolt, :fields => ["hashtag"]
+    bolt RollingCountBolt, parallelism: 3 do
+      source ExtractHashtagsBolt, fields: ['hashtag']
       output_fields :hashtag, :count
     end
 
-    bolt RankBolt, :parallelism => 3 do
-      source RollingCountBolt, :fields => ["hashtag"]
+    bolt RankBolt, parallelism: 3 do
+      source RollingCountBolt, fields: ['hashtag']
       output_fields :json_rankings
     end
 
-    bolt MergeBolt, :parallelism => 1 do
+    bolt MergeBolt, parallelism: 1 do
       source RankBolt, :global
       output_fields :json_rankings
     end

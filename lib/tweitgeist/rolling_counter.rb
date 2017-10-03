@@ -4,17 +4,17 @@ module Tweitgeist
   class RollingCounter
     attr_writer :active_bucket
 
-    # @param bucket_count [Fixnum] buckets ring size 
+    # @param bucket_count [Fixnum] buckets ring size
     # @param bucket_seconds [Fixnum] bucket timeout in seconds
     # @param options [Hash] options
-    # @option options [Boolean] :cleaner => false to disable automatic bucket expiration 
+    # @option options [Boolean] :cleaner => false to disable automatic bucket expiration
     # @yield [Object, Fixnum] call block upon bucket expiration with updated count for key
     def initialize(bucket_count, bucket_seconds, options = {}, &on_clean)
       @bucket_count = bucket_count
       @bucket_seconds = bucket_seconds
       @on_clean = on_clean
       @cleaner_thread = detach_cleaner if options[:cleaner] != false
-      @counter = Hash.new{|h, k| h[k] = Array.new(bucket_count, 0)}
+      @counter = Hash.new { |h, k| h[k] = Array.new(bucket_count, 0) }
       @counter_lock = Mutex.new
       @active_bucket = nil
     end
@@ -52,11 +52,11 @@ module Tweitgeist
         end
 
         # delete keys outside the hash iteration
-        zeroed.each{|key| @counter.delete(key)}
+        zeroed.each { |key| @counter.delete(key) }
       end
 
       # execute callbacks outside synchronize block
-      callbacks.each{|key, total| @on_clean.call(key, total) if @on_clean}
+      callbacks.each { |key, total| @on_clean.call(key, total) if @on_clean }
     end
 
     # @return [Fixnum] return set active_bucket or calc from current time
@@ -83,7 +83,5 @@ module Tweitgeist
         end
       end
     end
-
-
   end
 end
